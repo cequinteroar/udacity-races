@@ -8,7 +8,7 @@ let store = {
 }
 
 const updateStore = (store, newState) => {
-    store = Object.assign(store, newStore)
+    store = Object.assign(store, newState)
     // render(root, store)
 }
 
@@ -28,7 +28,6 @@ async function onPageLoad() {
 
 		getRacers()
 			.then((racers) => {
-				console.log(racers)
 				const html = renderRacerCars(racers)
 				renderAt('#racers', html)
 			});
@@ -44,12 +43,20 @@ function setupClickHandlers() {
 
 		// Race track form field
 		if (target.matches('.card.track')) {
-			handleSelectTrack(target)
+			if(!target.id){
+				handleSelectTrack(target.parentElement);
+			}else{
+				handleSelectTrack(target);
+			}
 		}
 
 		// Podracer form field
 		if (target.matches('.card.podracer')) {
-			handleSelectPodRacer(target)
+			if(!target.id){
+				handleSelectPodRacer(target.parentElement);
+			}else{
+				handleSelectPodRacer(target);
+			}
 		}
 
 		// Submit create race form
@@ -172,6 +179,7 @@ function handleSelectTrack(target) {
 	target.classList.add('selected')
 
 	// TODO - save the selected track id to the store
+	updateStore(store, {track_id: target.id})
 	
 }
 
@@ -233,7 +241,7 @@ function renderTrackCard(track) {
 
 	return `
 		<li id="${id}" class="card track">
-			<h3>${name}</h3>
+			<h3 class="card track">${name}</h3>
 		</li>
 	`
 }
@@ -329,7 +337,7 @@ function defaultFetchOpts() {
 	}
 }
 
-// TODO - Make a fetch call (with error handling!) to each of the following API endpoints 
+// API: FETCHING race info
 
 function getTracks() {
 	// GET request to `${SERVER}/api/tracks`	
