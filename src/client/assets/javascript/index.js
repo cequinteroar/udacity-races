@@ -1,10 +1,15 @@
 // PROVIDED CODE BELOW (LINES 1 - 80) DO NOT REMOVE
 
 // The store will hold all information needed globally
-var store = {
+let store = {
 	track_id: undefined,
 	player_id: undefined,
 	race_id: undefined,
+}
+
+const updateStore = (store, newState) => {
+    store = Object.assign(store, newStore)
+    // render(root, store)
 }
 
 // We need our javascript to wait until the DOM is loaded
@@ -19,13 +24,14 @@ async function onPageLoad() {
 			.then(tracks => {
 				const html = renderTrackCards(tracks)
 				renderAt('#tracks', html)
-			})
+			});
 
 		getRacers()
 			.then((racers) => {
+				console.log(racers)
 				const html = renderRacerCars(racers)
 				renderAt('#racers', html)
-			})
+			});
 	} catch(error) {
 		console.log("Problem getting tracks and racers ::", error.message)
 		console.error(error)
@@ -77,11 +83,17 @@ async function handleCreateRace() {
 	// render starting UI
 	renderAt('#race', renderRaceStartView())
 
-	// TODO - Get player_id and track_id from the store
+	// Get player_id and track_id from the store
+	const player_id = store.player_id;
+	const track_id = store.track_id;
 	
-	// const race = TODO - invoke the API call to create the race, then save the result
+	// Invoke the API call to create the race, then save the result
+	const race = createRace(player_id, track_id);
 
 	// TODO - update the store with the race id
+	console.log(race)
+	// updateStore(store, )
+
 
 	// The race has been created, now start the countdown
 	// TODO - call the async function runCountdown
@@ -182,7 +194,7 @@ function renderRacerCars(racers) {
 
 	return `
 		<ul id="racers">
-			${reuslts}
+			${results}
 		</ul>
 	`
 }
@@ -320,11 +332,17 @@ function defaultFetchOpts() {
 // TODO - Make a fetch call (with error handling!) to each of the following API endpoints 
 
 function getTracks() {
-	// GET request to `${SERVER}/api/tracks`
+	// GET request to `${SERVER}/api/tracks`	
+	return fetch(`${SERVER}/api/tracks`)
+	.then(res => res.json())
+	.catch(err => console.log("Problem with tracks retrieval request::", err));
 }
 
 function getRacers() {
 	// GET request to `${SERVER}/api/cars`
+	return fetch(`${SERVER}/api/cars`)
+	.then(res => res.json())
+	.catch(err => console.log("Problem with racers retrieval request::", err));
 }
 
 function createRace(player_id, track_id) {
