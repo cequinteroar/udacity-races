@@ -94,6 +94,7 @@ async function handleCreateRace() {
 		
 		// Invoke the API call to create the race, then save the result
 		const race = await  createRace(player_id, track_id);
+		console.log("race created", race)
 	
 		// Update the store with the race id
 		updateStore(store, {race_id: race.ID} )
@@ -102,11 +103,11 @@ async function handleCreateRace() {
 		// render starting UI
 		renderAt('#race', renderRaceStartView(race.Track, race.racers))
 	
-	
-		// The race has been created, now start the countdown
-		// Async function runCountdown
+		//	Countdown function
 		await runCountdown();
 		
+		//	Race functions
+		console.log(store.race_id)
 		await startRace(store.race_id-1)
 		await runRace(store.race_id-1)
 
@@ -117,17 +118,19 @@ async function handleCreateRace() {
 
 function runRace(raceID) {
 	return new Promise(resolve => {
-		// TODO - use Javascript's built in setInterval method to get race info every 500ms
-		setInterval(()=> {
+		// SetInterval method to get race info every 500ms
+		const raceInterval= setInterval(()=> {
 			getRace(raceID).then(data => {
 				if(data.status === "in-progress"){
 					renderAt('#leaderBoard', raceProgress(data.positions))
 				}
+
+				console.log(data);
 				
 				if(data.status === "finished"){
-					clearInterval(raceInterval) // to stop the interval from repeating
 					renderAt('#race', resultsView(data.positions)) // to render the results view
-					reslove(res) // resolve the promise
+					clearInterval(raceInterval) // to stop the interval from repeating
+					resolve(data); // resolve the promise
 				}
 			})
 			.catch(error => console.log("error while getting race: ", error))
@@ -195,8 +198,8 @@ function handleSelectTrack(target) {
 }
 
 function handleAccelerate() {
-	console.log("accelerate button clicked")
-	// TODO - Invoke the API call to accelerate
+	console.log("accelerate button clicked");
+	accelerate(store.race_id - 1);
 }
 
 // HTML VIEWS ------------------------------------------------
@@ -399,4 +402,10 @@ function accelerate(id) {
 	// POST request to `${SERVER}/api/races/${id}/accelerate`
 	// options parameter provided as defaultFetchOpts
 	// no body or datatype needed for this request
+	return fetch(`${SERVER}/api/races/${id}/accelerate`, {
+		method: 'POST',
+		...defaultFetchOpts(),
+	})
+	.then(res =>  res.text()).then(console.log)
+	.catch(err => console.log("Problem with acceleration request::", err))
 }
