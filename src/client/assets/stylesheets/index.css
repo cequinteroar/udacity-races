@@ -87,7 +87,7 @@ main {
 section {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 30px 0;
+  padding: 30px;
 }
 
 footer {
@@ -98,7 +98,7 @@ footer {
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
   header {
-    height: 100vh;
+    height: 330px !important;
   }
 }
 
@@ -106,7 +106,7 @@ footer {
 
 @media (min-width: 1224px) {
   header {
-    height: 700px;
+    height: 520px !important;
   }
 }
 
@@ -114,6 +114,6 @@ footer {
 
 @media (min-width: 1824px) {
   header {
-    height: 700px;
+    height: 500px !important;
   }
 }

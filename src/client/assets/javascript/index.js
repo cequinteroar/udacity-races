@@ -4,15 +4,15 @@
 let store = {
 	track_id: undefined,
 	player_id: undefined,
-	race_id: undefined,
+	race_id: undefined
 }
 
 const updateStore = (store, newState) => {
-    store = Object.assign(store, newState)
+	store = Object.assign(store, newState)
 }
 
 // We need our javascript to wait until the DOM is loaded
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 	onPageLoad()
 	setupClickHandlers()
 })
@@ -30,30 +30,30 @@ async function onPageLoad() {
 				const html = renderRacerCars(racers)
 				renderAt('#racers', html)
 			});
-	} catch(error) {
+	} catch (error) {
 		console.log("Problem getting tracks and racers ::", error.message)
 		console.error(error)
 	}
 }
 
 function setupClickHandlers() {
-	document.addEventListener('click', function(event) {
+	document.addEventListener('click', function (event) {
 		const { target } = event
 
 		// Race track form field
 		if (target.matches('.card.track')) {
-			if(!target.id){
+			if (!target.id) {
 				handleSelectTrack(target.parentElement);
-			}else{
+			} else {
 				handleSelectTrack(target);
 			}
 		}
 
 		// Podracer form field
 		if (target.matches('.card.podracer')) {
-			if(!target.id){
+			if (!target.id) {
 				handleSelectPodRacer(target.parentElement);
-			}else{
+			} else {
 				handleSelectPodRacer(target);
 			}
 		}
@@ -61,13 +61,13 @@ function setupClickHandlers() {
 		// Submit create race form
 		if (target.matches('#submit-create-race')) {
 			event.preventDefault()
-	
+
 			// start race
 			handleCreateRace()
 		}
 
 		// Handle acceleration click
-		if (target.matches('#gas-peddle')) {
+		if (target.matches('#gas-peddle') || target.matches('.fa-running')) {
 			handleAccelerate(target)
 		}
 
@@ -77,7 +77,7 @@ function setupClickHandlers() {
 async function delay(ms) {
 	try {
 		return await new Promise(resolve => setTimeout(resolve, ms));
-	} catch(error) {
+	} catch (error) {
 		console.log("an error shouldn't be possible here")
 		console.log(error)
 	}
@@ -86,32 +86,30 @@ async function delay(ms) {
 
 // This async function controls the flow of the race, add the logic and error handling
 async function handleCreateRace() {
-	try{
+	try {
 
 		// Get player_id and track_id from the store
 		const player_id = store.player_id;
 		const track_id = store.track_id;
-		
+
 		// Invoke the API call to create the race, then save the result
-		const race = await  createRace(player_id, track_id);
-		console.log("race created", race)
-	
+		const race = await createRace(player_id, track_id);
+
 		// Update the store with the race id
-		updateStore(store, {race_id: race.ID} )
-		
-	
+		updateStore(store, { race_id: race.ID })
+
+
 		// render starting UI
 		renderAt('#race', renderRaceStartView(race.Track, race.racers))
-	
+
 		//	Countdown function
 		await runCountdown();
-		
-		//	Race functions
-		console.log(store.race_id)
-		await startRace(store.race_id-1)
-		await runRace(store.race_id-1)
 
-	}catch(err){
+		//	Race functions
+		await startRace(store.race_id - 1)
+		await runRace(store.race_id - 1)
+
+	} catch (err) {
 		console.log(err)
 	}
 }
@@ -119,21 +117,21 @@ async function handleCreateRace() {
 function runRace(raceID) {
 	return new Promise(resolve => {
 		// SetInterval method to get race info every 500ms
-		const raceInterval= setInterval(()=> {
+		const raceInterval = setInterval(() => {
 			getRace(raceID).then(data => {
-				if(data.status === "in-progress"){
+				if (data.status === "in-progress") {
 					renderAt('#leaderBoard', raceProgress(data.positions))
 				}
 
 				console.log(data);
-				
-				if(data.status === "finished"){
+
+				if (data.status === "finished") {
 					renderAt('#race', resultsView(data.positions)) // to render the results view
 					clearInterval(raceInterval) // to stop the interval from repeating
 					resolve(data); // resolve the promise
 				}
 			})
-			.catch(error => console.log("error while getting race: ", error))
+				.catch(error => console.log("error while getting race: ", error))
 		}, 500);
 	}).catch(error => console.log("Error while running the race", error));
 }
@@ -149,17 +147,18 @@ async function runCountdown() {
 			const countdownInterval = setInterval(() => {
 				// run this DOM manipulation to decrement the countdown for the user
 				document.getElementById('big-numbers').innerHTML = --timer
-	
-	
+
+
 				// If the countdown is done, clear the interval, resolve the promise, and return
-				if(timer <= 0){
+				if (timer <= 0) {
 					clearInterval(countdownInterval);
+					updateStore(store, {started: true});
 					resolve();
 				}
 			}, 1000)
 			return resolve;
 		})
-	} catch(error) {
+	} catch (error) {
 		console.log(error);
 	}
 }
@@ -169,7 +168,7 @@ function handleSelectPodRacer(target) {
 
 	// remove class selected from all racer options
 	const selected = document.querySelector('#racers .selected')
-	if(selected) {
+	if (selected) {
 		selected.classList.remove('selected')
 	}
 
@@ -177,7 +176,7 @@ function handleSelectPodRacer(target) {
 	target.classList.add('selected')
 
 	// Save the selected racer to the store
-	updateStore(store, {player_id: target.id})
+	updateStore(store, { player_id: target.id })
 }
 
 function handleSelectTrack(target) {
@@ -185,7 +184,7 @@ function handleSelectTrack(target) {
 
 	// remove class selected from all track options
 	const selected = document.querySelector('#tracks .selected')
-	if(selected) {
+	if (selected) {
 		selected.classList.remove('selected')
 	}
 
@@ -193,8 +192,8 @@ function handleSelectTrack(target) {
 	target.classList.add('selected')
 
 	// Save the selected track id to the store
-	updateStore(store, {track_id: target.id})
-	
+	updateStore(store, { track_id: target.id })
+
 }
 
 function handleAccelerate() {
@@ -221,15 +220,41 @@ function renderRacerCars(racers) {
 	`
 }
 
+function selectImg(name) {
+	let url = "";
+	switch (name) {
+		case "Hatake Kakashi":
+			url = "kakashi.png";
+			break;
+		case "Naruto Uzumaki":
+			url = "naruto.png";
+			break;
+		case "Sasuke Uchiha":
+			url = "sasuke.png";
+			break;
+		case "Hinata Hyuga":
+			url = "hinata.png";
+			break;
+		case "Rock Lee":
+			url = "lee.png";
+			break;
+		default:
+			url=''
+	}
+	return url;
+}
+
 function renderRacerCard(racer) {
-	const { id, driver_name, top_speed, acceleration, handling } = racer
+	const { id, driver_name, top_speed, acceleration, handling } = racer;
+
+	const imgUrl = selectImg(driver_name);
 
 	return `
 		<li class="card podracer" id="${id}">
-			<h3 class="card podracer">Driver: ${driver_name}</h3>
-			<p class="card podracer">Max. Speed: ${top_speed}</p>
-			<p class="card podracer">Acc: ${acceleration}</p>
-			<p class="card podracer">Hanlding: ${handling}</p>
+			<img class="card podracer" src="../assets/pictures/${imgUrl}" alt="${driver_name}" />
+			<p class="card podracer"><i class="fas fa-tachometer-alt"></i> ${top_speed}</p>
+			<p class="card podracer"><i class="fas fa-angle-double-up"></i>	 ${acceleration}</p>
+			<p class="card podracer"><i class="fas fa-fist-raised"></i> ${handling}</p>
 		</li>
 	`
 }
@@ -255,7 +280,7 @@ function renderTrackCard(track) {
 
 	return `
 		<li id="${id}" class="card track">
-			<h3 class="card track">${name}</h3>
+			<img class="card track" src="../assets/pictures/${name}.jpg" alt="${name}" />
 		</li>
 	`
 }
@@ -279,8 +304,8 @@ function renderRaceStartView(track, racers) {
 
 			<section id="accelerate">
 				<h2>Directions</h2>
-				<p>Click the button as fast as you can to make your racer go faster!</p>
-				<button id="gas-peddle">Click Me To Win!</button>
+				<p>Click the running ninja to win!</p>
+				<button id="gas-peddle"><i class="fas fa-running"></i></button>
 			</section>
 		</main>
 		<footer></footer>
@@ -316,7 +341,7 @@ function raceProgress(positions) {
 				</td>
 			</tr>
 		`
-	})
+	});
 
 	return `
 		<main>
@@ -346,7 +371,7 @@ function defaultFetchOpts() {
 		mode: 'cors',
 		headers: {
 			'Content-Type': 'application/json',
-			'Access-Control-Allow-Origin' : SERVER,
+			'Access-Control-Allow-Origin': SERVER,
 		},
 	}
 }
@@ -356,37 +381,37 @@ function defaultFetchOpts() {
 function getTracks() {
 	// GET request to `${SERVER}/api/tracks`	
 	return fetch(`${SERVER}/api/tracks`)
-	.then(res => res.json())
-	.catch(err => console.log("Problem with tracks retrieval request::", err));
+		.then(res => res.json())
+		.catch(err => console.log("Problem with tracks retrieval request::", err));
 }
 
 function getRacers() {
 	// GET request to `${SERVER}/api/cars`
 	return fetch(`${SERVER}/api/cars`)
-	.then(res => res.json())
-	.catch(err => console.log("Problem with racers retrieval request::", err));
+		.then(res => res.json())
+		.catch(err => console.log("Problem with racers retrieval request::", err));
 }
 
 function createRace(player_id, track_id) {
 	player_id = parseInt(player_id)
 	track_id = parseInt(track_id)
 	const body = { player_id, track_id }
-	
+
 	return fetch(`${SERVER}/api/races`, {
 		method: 'POST',
 		...defaultFetchOpts(),
 		dataType: 'jsonp',
 		body: JSON.stringify(body)
 	})
-	.then(res => res.json())
-	.catch(err => console.log("Problem with createRace request::", err))
+		.then(res => res.json())
+		.catch(err => console.log("Problem with createRace request::", err))
 }
 
 function getRace(id) {
 	// GET request to `${SERVER}/api/races/${id}`	
 	return fetch(`${SERVER}/api/races/${id}`)
-	.then(res => res.json())
-	.catch(err => console.log("Problem with getRace request::", err))
+		.then(res => res.json())
+		.catch(err => console.log("Problem with getRace request::", err))
 }
 
 function startRace(id) {
@@ -394,8 +419,8 @@ function startRace(id) {
 		method: 'POST',
 		...defaultFetchOpts(),
 	})
-	.then(res => res.json())
-	.catch(err => console.log("Problem with getRace request::", err))
+		.then(res => res.json())
+		.catch(err => console.log("Problem with getRace request::", err))
 }
 
 function accelerate(id) {
@@ -406,6 +431,6 @@ function accelerate(id) {
 		method: 'POST',
 		...defaultFetchOpts(),
 	})
-	.then(res =>  res.text()).then(console.log)
-	.catch(err => console.log("Problem with acceleration request::", err))
+		.then(res => res.text()).then(console.log)
+		.catch(err => console.log("Problem with acceleration request::", err))
 }

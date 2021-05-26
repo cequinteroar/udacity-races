@@ -2,7 +2,19 @@
 
 /* -------------------  MOBILE  --------------------- */
 header {
-  background-image: url('https://via.placeholder.com/1150');
+    background-image: url('../pictures/konoha.jpg');
+}
+
+.race-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+    margin-left: 10%;
+}
+
+.flex-title {
+    flex: 1;
 }
 
 main#two-columns {
@@ -19,9 +31,17 @@ section#accelerate button {
     width: 300px;
     margin: 30px auto;
     border-radius: 180%;
-    background-color: green;
+    color: green;
     border-color: rgb(14, 166, 6);
     cursor: pointer;
+}
+section#accelerate button:disabled {
+    color: red;
+    border-color: red;
+}
+
+section#accelerate button .fas {
+    font-size: 162px;
 }
 
 #big-numbers {
@@ -32,14 +52,26 @@ section#accelerate button {
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
 
+    .flex-title {
+        font-size: 40px;
+    }
+
 }
 
 /* -------------------  DESKTOP  -------------------- */
 
 @media (min-width: 1224px) {
+
+    .flex-title {
+        font-size: 45px;
+    }
 }
 
 /* -------------------  LARGE SCREENS  -------------- */
 
 @media (min-width: 1824px) {
+
+    .flex-title {
+        font-size: 45px;
+    }
 }

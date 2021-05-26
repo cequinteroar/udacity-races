@@ -5,15 +5,24 @@
 
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
+    header {
+        height: 330px !important;
+    }
 
 }
 
 /* -------------------  DESKTOP  -------------------- */
 
 @media (min-width: 1224px) {
+    header {
+        height: 520px !important;
+    }
 }
 
 /* -------------------  LARGE SCREENS  -------------- */
 
 @media (min-width: 1824px) {
+    header {
+      height: 500px !important;
+    }
 }

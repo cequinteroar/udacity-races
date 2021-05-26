@@ -3,21 +3,46 @@
 /* -------------------  MOBILE  --------------------- */
 
 header {
-  background-image: url('https://via.placeholder.com/1150');
+  background-image: url('../pictures/konoha.jpg');
+}
+
+section#create-race {
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
+  header {
+    height: 330px;
+  }
 
+  form li img {
+      height: 56px;
+  }
 }
 
 /* -------------------  DESKTOP  -------------------- */
 
 @media (min-width: 1224px) {
+  header {
+    height: 520px;
+  }
+
+  form li img {
+      height: 100px;
+  }
 }
 
 /* -------------------  LARGE SCREENS  -------------- */
 
 @media (min-width: 1824px) {
+  header {
+    height: 500px;
+  }
+
+  form li img {
+      height: 120px;
+  }
 }
