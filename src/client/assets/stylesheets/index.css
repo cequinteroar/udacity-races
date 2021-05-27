@@ -90,9 +90,28 @@ section {
   padding: 30px;
 }
 
+#section-results {
+  padding: 30px;
+}
+
 footer {
   height: 200px;
   background-color: black;
+}
+
+a {
+  background-color: white;
+  color: green;
+  border: 2px solid green;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover {
+  background-color: green;
+  color: white;
 }
 
 /* -------------------  TABLET  --------------------- */

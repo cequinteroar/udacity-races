@@ -123,8 +123,6 @@ function runRace(raceID) {
 					renderAt('#leaderBoard', raceProgress(data.positions))
 				}
 
-				console.log(data);
-
 				if (data.status === "finished") {
 					renderAt('#race', resultsView(data.positions)) // to render the results view
 					clearInterval(raceInterval) // to stop the interval from repeating
@@ -319,9 +317,9 @@ function resultsView(positions) {
 		<header>
 			<h1>Race Results</h1>
 		</header>
-		<main>
+		<main id="section-results">
 			${raceProgress(positions)}
-			<a href="/race">Start a new race</a>
+			<a href="/race"><i class="fas fa-running"></i> New race</a>
 		</main>
 	`
 }
